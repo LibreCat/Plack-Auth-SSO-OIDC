@@ -10,7 +10,7 @@ Plack::Auth::SSO::OIDC - implementation of OpenID Connect for Plack::Auth::SSO
 
 # DESCRIPTION
 
-This is an implementation of [Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO) to authenticate against a CAS server.
+This is an implementation of [Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO) to authenticate against a openid connect server.
 
 It inherits all configuration options from its parent.
 
