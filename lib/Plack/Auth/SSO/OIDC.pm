@@ -511,6 +511,39 @@ Note that all claims are also stored in $session->get("auth_sso")->{info}
 
 =back
 
+=head1 HOW IT WORKS
+
+* the openid configuration is retrieved from C<< {idp_url}/.well-known/openid-configuration >>
+
+    * key C<< authorization_endpoint >> must be present in openid configuration
+
+    * key C<< token_endpoint >> must be present in openid configuration
+
+    * key C<< jwks_uri >> must be present in openid configuration
+
+* the user is redirected to the authorization endpoint with extra query parameters
+
+* after authentication at the authorization endpoint, the user is redirected back to this url with query parameters C<< code >> and C<< state >>. When something happened at the authorization endpoint, query parameters C<< error >> and C<< error_description >> are returned, and no C<< code >>.
+
+* C<< code >> is exchanged for a json string, using the token endpoint. This json string is a record that contains the following attributes:
+
+    * C<< id_token >> : jwt token that contains the claims
+
+    * C<< token_type >>: Bearer
+
+    * C<< expires_in >>
+
+* key C<< id_token >> in the token json string contains three parts:
+
+    * jwt jose header. Can be decoded with base64 into a json string
+
+    * jwt payload. Can be decoded with base64 into a json string
+
+    * jwt signature
+
+* the C<< id_token >> is decoded into a json string and then to a perl hash. All this data is stored C<< $session->{auth_sso}->{info} >>. One of these attributes will be the uid that will be stored at C<< $session->{auth_sso}->{uid} >>. This is determined by configuration key C<< uid_key >> (see above). e.g. "email"
+
+
 =head1 LOGGING
 
 All subclasses of L<Plack::Auth::SSO> use L<Log::Any>
