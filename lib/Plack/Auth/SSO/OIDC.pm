@@ -469,7 +469,7 @@ Plack::Auth::SSO::OIDC - implementation of OpenID Connect for Plack::Auth::SSO
 
 =head1 DESCRIPTION
 
-This is an implementation of L<Plack::Auth::SSO> to authenticate against a CAS server.
+This is an implementation of L<Plack::Auth::SSO> to authenticate against a openid connect server.
 
 It inherits all configuration options from its parent.
 
