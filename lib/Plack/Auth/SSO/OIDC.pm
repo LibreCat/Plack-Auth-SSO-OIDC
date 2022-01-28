@@ -476,25 +476,117 @@ This is an implementation of L<Plack::Auth::SSO> to authenticate against a openi
 
 It inherits all configuration options from its parent.
 
-=head1 CONFIG
+=head1 SYNOPSIS
+
+    # in your app.psi (Plack)
+
+    use strict;
+    use warnings;
+    use Plack::Builder;
+    use JSON;
+    use Plack::Auth::SSO::OIDC;
+    use Plack::Session::Store::File;
+
+    my $uri_base = "http://localhost:5000";
+
+    builder {
+
+        # session middleware needed to store "auth_sso" and/or "auth_sso_error"
+        # in memory session store for testing purposes
+        enable "Session";
+
+        # for authentication, redirect your users to this path
+        mount "/auth/oidc" => Plack::Auth::SSO::OIDC->new(
+
+            # plack application needs to know about the base url of this application
+            uri_base => $uri_base,
+
+            # after successfull authentication, user is redirected to this path (uri_base is used!)
+            authorization_path => "/auth/callback",
+
+            # when authentication fails at the identity provider
+            # user is redirected to this path with session key "auth_sso_error" (hash)
+            error_path => "/auth/error",
+
+            # base url of openid connect server
+            idp_url => "https://example.oidc.org/auth/oidc",
+            client_id => "my-client-id",
+            client_secret => "myclient-secret",
+            uid_key => "email"
+
+        )->to_app();
+
+        # example psgi app that is called after successfull authentication at /auth/oidc (see above)
+        # it expects session key "auth_sso" to be present
+        # here you typically create a user session based on the uid in "auth_sso"
+        mount "/auth/callback" => sub {
+
+            my $env     = shift;
+            my $session = Plack::Session->new($env);
+            my $auth_sso= $session->get("auth_sso");
+            my $user    = MyUsers->get( $auth_sso->{uid} );
+            $session->set("user_id", $user->{id});
+            [ 200, [ "Content-Type" => "text/plain" ], [
+                "logged in! ", $user->{name}
+            ]];
+
+        };
+
+        # example psgi app that is called after unsuccessfull authentication at /auth/oidc (see above)
+        # it expects session key "auth_sso_error" to be present
+        mount "/auth/error" => sub {
+
+            my $env = shift;
+            my $session = Plack::Session->new($env);
+            my $auth_sso_error = $session->get("auth_sso_error");
+
+            [ 200, [ "Content-Type" => "text/plain" ], [
+                "something happened during single sign on authentication: ",
+                $auth_sso_error->{content}
+            ]];
+
+        };
+    };
+
+=head1 CONSTRUCTOR ARGUMENTS
 
 =over 4
 
-=item idp_url
+=item C<< uri_base >>
+
+See L<Plack::Auth::SSO/uri_base>
+
+=item C<< id >>
+
+See L<Plack::Auth::SSO/id>
+
+=item C<< session_key >>
+
+See L<Plack::Auth::SSO/session_key>
+
+=item C<< authorization_path >>
+
+See L<Plack::Auth::SSO/authorization_path>
+
+=item C<< error_path >>
+
+See L<Plack::Auth::SSO/error_path>
+
+=item C<< idp_url >>
 
 base url of the OIDC service.
 
 The openid configuration is expected at and retrieved from ${idp_url}/.well-known/openid-configuration
 
-=item client_id
+=item C<< client_id >>
 
 client-id as given by the OIDC service
 
-=item client_secret
+=item C<< client_secret >>
 
 client-secret as given by the OIDC service
 
-=item scope
+=item C<< scope >>
 
 Scope requested from the OIDC service.
 
@@ -506,46 +598,51 @@ Please include scope C<< "openid" >>
 
 cf. L<https://openid.net/specs/openid-connect-basic-1_0.html#Scopes>
 
-=item uid_key
+=item C<< uid_key >>
 
 Attribute from claims to be used as uid
 
-Note that all claims are also stored in $session->get("auth_sso")->{info}
+Note that all claims are also stored in C<< $session->get("auth_sso")->{info} >>
 
 =back
 
 =head1 HOW IT WORKS
 
-* the openid configuration is retrieved from C<< {idp_url}/.well-known/openid-configuration >>
+=over 4
 
-    * key C<< authorization_endpoint >> must be present in openid configuration
+=item the openid configuration is retrieved from C<< {idp_url}/.well-known/openid-configuration >>
 
-    * key C<< token_endpoint >> must be present in openid configuration
+=over 6
 
-    * key C<< jwks_uri >> must be present in openid configuration
+=item key C<< authorization_endpoint >> must be present in openid configuration
 
-* the user is redirected to the authorization endpoint with extra query parameters
+=item key C<< token_endpoint >> must be present in openid configuration
 
-* after authentication at the authorization endpoint, the user is redirected back to this url with query parameters C<< code >> and C<< state >>. When something happened at the authorization endpoint, query parameters C<< error >> and C<< error_description >> are returned, and no C<< code >>.
+=item key C<< jwks_uri >> must be present in openid configuration
 
-* C<< code >> is exchanged for a json string, using the token endpoint. This json string is a record that contains the following attributes:
+=item the user is redirected to the authorization endpoint with extra query parameters
 
-    * C<< id_token >> : jwt token that contains the claims
+=back
 
-    * C<< token_type >>: Bearer
+=item after authentication at the authorization endpoint, the user is redirected back to this url with query parameters C<< code >> and C<< state >>. When something happened at the authorization endpoint, query parameters C<< error >> and C<< error_description >> are returned, and no C<< code >>.
 
-    * C<< expires_in >>
+=item C<< code >> is exchanged for a json string, using the token endpoint. This json string is a record that contains attributes like C<< id_token >> and C<< access_token >>. See L<https://openid.net/specs/openid-connect-core-1_0.html#TokenResponse> for more information.
 
-* key C<< id_token >> in the token json string contains three parts:
+=item key C<< id_token >> in the token json string contains three parts:
 
-    * jwt jose header. Can be decoded with base64 into a json string
+=over 6
 
-    * jwt payload. Can be decoded with base64 into a json string
+=item jwt jose header. Can be decoded with base64 into a json string
 
-    * jwt signature
+=item jwt payload. Can be decoded with base64 into a json string
 
-* the C<< id_token >> is decoded into a json string and then to a perl hash. All this data is stored C<< $session->{auth_sso}->{info} >>. One of these attributes will be the uid that will be stored at C<< $session->{auth_sso}->{uid} >>. This is determined by configuration key C<< uid_key >> (see above). e.g. "email"
+=item jwt signature
 
+=back
+
+=item the C<< id_token >> is decoded into a json string and then to a perl hash. All this data is stored C<< $session->{auth_sso}->{info} >>. One of these attributes will be the uid that will be stored at C<< $session->{auth_sso}->{uid} >>. This is determined by configuration key C<< uid_key >> (see above). e.g. "email"
+
+=back
 
 =head1 LOGGING
 
