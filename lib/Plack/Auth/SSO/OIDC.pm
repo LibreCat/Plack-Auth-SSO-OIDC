@@ -418,11 +418,13 @@ sub to_app {
             code    => $code
         );
 
-        $self->log->debugf("tokens: %s", $tokens);
+        $self->log->debugf("tokens: %s", $tokens)
+            if $self->log->is_debug();
 
         my $claims = $self->extract_claims_from_id_token($tokens->{id_token});
 
-        $self->log->debugf("claims: %s", $claims);
+        $self->log->debugf("claims: %s", $claims)
+            if $self->log->is_debug();
 
         $self->cleanup($session);
 
@@ -441,7 +443,8 @@ sub to_app {
             }
         );
 
-        $self->log->debugf("auth_sso: %s", $self->get_auth_sso($session));
+        $self->log->debugf("auth_sso: %s", $self->get_auth_sso($session))
+            if $self->log->is_debug();
 
         return $self->redirect_to_authorization();
 
