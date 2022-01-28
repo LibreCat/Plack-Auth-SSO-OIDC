@@ -19,7 +19,7 @@ builder {
         uri_base => $uri_base,
         authorization_path => "/auth/callback",
         error_path => "/auth/error",
-        idp_url => "https://example.oidc.org/auth/oidc",
+        openid_uri => "https://example.oidc.org/auth/oidc/.well-known/openid-configuration",
         client_id => "my-client-id",
         client_secret => "myclient-secret",
         uid_key => "email"

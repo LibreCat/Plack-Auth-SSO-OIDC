@@ -42,9 +42,9 @@ has client_secret => (
     required => 1
 );
 
-has idp_uri => (
+has openid_uri => (
     is  => "ro",
-    isa => sub { is_string($_[0]) or die("idp_uri should be string"); },
+    isa => sub { is_string($_[0]) or die("openid_uri should be string"); },
     required => 1
 );
 
@@ -126,7 +126,7 @@ sub _build_openid_configuration {
 
     my $self = $_[0];
 
-    my $url = $self->idp_uri."/.well-known/openid-configuration";
+    my $url = $self->openid_uri;
     my ($data, @errors) = $self->get_json($url);
     die("unable to retrieve openid configuration from $url: ".join(", ",@errors))
         unless defined($data);
@@ -508,8 +508,8 @@ It inherits all configuration options from its parent.
             # user is redirected to this path with session key "auth_sso_error" (hash)
             error_path => "/auth/error",
 
-            # base url of openid connect server
-            idp_uri => "https://example.oidc.org/auth/oidc",
+            # openid connect discovery url
+            openid_uri => "https://example.oidc.org/auth/oidc/.well-known/openid-configuration",
             client_id => "my-client-id",
             client_secret => "myclient-secret",
             uid_key => "email"
@@ -572,11 +572,11 @@ See L<Plack::Auth::SSO/authorization_path>
 
 See L<Plack::Auth::SSO/error_path>
 
-=item C<< idp_uri >>
+=item C<< openid_uri >>
 
-base url of the OIDC service.
+base url of the OIDC discovery url.
 
-The openid configuration is expected at and retrieved from ${idp_uri}/.well-known/openid-configuration
+typically an url that ends on C<< /.well-known/openid-configuration >>
 
 =item C<< client_id >>
 
@@ -610,7 +610,7 @@ Note that all claims are also stored in C<< $session->get("auth_sso")->{info} >>
 
 =over 4
 
-=item the openid configuration is retrieved from C<< {idp_uri}/.well-known/openid-configuration >>
+=item the openid configuration is retrieved from C<< {openid_uri} >>
 
 =over 6
 
