@@ -42,9 +42,9 @@ has client_secret => (
     required => 1
 );
 
-has idp_url => (
+has idp_uri => (
     is  => "ro",
-    isa => sub { is_string($_[0]) or die("idp_url should be string"); },
+    isa => sub { is_string($_[0]) or die("idp_uri should be string"); },
     required => 1
 );
 
@@ -126,7 +126,7 @@ sub _build_openid_configuration {
 
     my $self = $_[0];
 
-    my $url = $self->idp_url."/.well-known/openid-configuration";
+    my $url = $self->idp_uri."/.well-known/openid-configuration";
     my ($data, @errors) = $self->get_json($url);
     die("unable to retrieve openid configuration from $url: ".join(", ",@errors))
         unless defined($data);
@@ -177,7 +177,7 @@ sub make_random_string {
 
 }
 
-sub generate_authorization_url {
+sub generate_authorization_uri {
 
     my ($self, %args) = @_;
 
@@ -357,12 +357,12 @@ sub to_app {
 
             $self->cleanup($session);
 
-            my $authorization_url = $self->generate_authorization_url(
+            my $authorization_uri = $self->generate_authorization_uri(
                 request => $request,
                 session => $session
             );
 
-            return [302, [Location => $authorization_url], []];
+            return [302, [Location => $authorization_uri], []];
 
         }
 
@@ -509,7 +509,7 @@ It inherits all configuration options from its parent.
             error_path => "/auth/error",
 
             # base url of openid connect server
-            idp_url => "https://example.oidc.org/auth/oidc",
+            idp_uri => "https://example.oidc.org/auth/oidc",
             client_id => "my-client-id",
             client_secret => "myclient-secret",
             uid_key => "email"
@@ -572,11 +572,11 @@ See L<Plack::Auth::SSO/authorization_path>
 
 See L<Plack::Auth::SSO/error_path>
 
-=item C<< idp_url >>
+=item C<< idp_uri >>
 
 base url of the OIDC service.
 
-The openid configuration is expected at and retrieved from ${idp_url}/.well-known/openid-configuration
+The openid configuration is expected at and retrieved from ${idp_uri}/.well-known/openid-configuration
 
 =item C<< client_id >>
 
@@ -610,7 +610,7 @@ Note that all claims are also stored in C<< $session->get("auth_sso")->{info} >>
 
 =over 4
 
-=item the openid configuration is retrieved from C<< {idp_url}/.well-known/openid-configuration >>
+=item the openid configuration is retrieved from C<< {idp_uri}/.well-known/openid-configuration >>
 
 =over 6
 

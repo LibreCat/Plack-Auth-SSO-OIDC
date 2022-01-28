@@ -47,7 +47,7 @@ It inherits all configuration options from its parent.
             error_path => "/auth/error",
 
             # base url of openid connect server
-            idp_url => "https://example.oidc.org/auth/oidc",
+            idp_uri => "https://example.oidc.org/auth/oidc",
             client_id => "my-client-id",
             client_secret => "myclient-secret",
             uid_key => "email"
@@ -108,11 +108,11 @@ It inherits all configuration options from its parent.
 
     See ["error\_path" in Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO#error_path)
 
-- `idp_url`
+- `idp_uri`
 
     base url of the OIDC service.
 
-    The openid configuration is expected at and retrieved from ${idp\_url}/.well-known/openid-configuration
+    The openid configuration is expected at and retrieved from ${idp\_uri}/.well-known/openid-configuration
 
 - `client_id`
 
@@ -142,7 +142,7 @@ It inherits all configuration options from its parent.
 
 # HOW IT WORKS
 
-- the openid configuration is retrieved from `{idp_url}/.well-known/openid-configuration`
+- the openid configuration is retrieved from `{idp_uri}/.well-known/openid-configuration`
     - key `authorization_endpoint` must be present in openid configuration
     - key `token_endpoint` must be present in openid configuration
     - key `jwks_uri` must be present in openid configuration
