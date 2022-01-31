@@ -464,8 +464,8 @@ Plack::Auth::SSO::OIDC - implementation of OpenID Connect for Plack::Auth::SSO
 
 # STATUS
 
-[![Build Status](https://travis-ci.org/LibreCat/Plack-Auth-SSO-OIDC.svg?branch=master)](https://travis-ci.org/LibreCat/Plack-Auth-SSO-OIDC)
-[![Coverage](https://coveralls.io/repos/LibreCat/Plack-Auth-SSO-OIDC/badge.png?branch=master)](https://coveralls.io/r/LibreCat/Plack-Auth-SSO-OIDC)
+[![Build Status](https://travis-ci.org/LibreCat/Plack-Auth-SSO-OIDC.svg?branch=main)](https://travis-ci.org/LibreCat/Plack-Auth-SSO-OIDC)
+[![Coverage](https://coveralls.io/repos/LibreCat/Plack-Auth-SSO-OIDC/badge.png?branch=main)](https://coveralls.io/r/LibreCat/Plack-Auth-SSO-OIDC)
 [![CPANTS kwalitee](http://cpants.cpanauthors.org/dist/Plack-Auth-SSO-OIDC.png)](http://cpants.cpanauthors.org/dist/Plack-Auth-SSO-OIDC)
 
 =end markdown
@@ -640,7 +640,7 @@ Note that all claims are also stored in C<< $session->get("auth_sso")->{info} >>
 
 =back
 
-=item the C<< id_token >> is decoded into a json string and then to a perl hash. All this data is stored C<< $session->{auth_sso}->{info} >>. One of these attributes will be the uid that will be stored at C<< $session->{auth_sso}->{uid} >>. This is determined by configuration key C<< uid_key >> (see above). e.g. "email"
+=item the jwt payload from the C<< id_token >> is decoded into a json string and then to a perl hash. All this data is stored C<< $session->{auth_sso}->{info} >>. One of these attributes will be the uid that will be stored at C<< $session->{auth_sso}->{uid} >>. This is determined by configuration key C<< uid_key >> (see above). e.g. "email"
 
 =back
 
