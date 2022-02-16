@@ -369,7 +369,7 @@ sub to_app {
         # check csrf
         if ( $stored_state ne $state ) {
 
-            $self->cleanup();
+            $self->cleanup($session);
             $self->set_auth_sso_error( $session,{
                 package    => __PACKAGE__,
                 package_id => $self->id,
@@ -386,7 +386,7 @@ sub to_app {
 
         if ( is_string($error) ) {
 
-            $self->cleanup();
+            $self->cleanup($session);
             $self->set_auth_sso_error($session, {
                 package    => __PACKAGE__,
                 package_id => $self->id,
@@ -401,7 +401,7 @@ sub to_app {
 
         unless ( is_string($code) ) {
 
-            $self->cleanup();
+            $self->cleanup($session);
             $self->set_auth_sso_error($session, {
                 package    => __PACKAGE__,
                 package_id => $self->id,
@@ -420,6 +420,19 @@ sub to_app {
 
         $self->log->debugf("tokens: %s", $tokens)
             if $self->log->is_debug();
+
+        if ( is_string($tokens->{error}) ) {
+
+            $self->cleanup($session);
+            $self->set_auth_sso_error($session, {
+                package    => __PACKAGE__,
+                package_id => $self->id,
+                type => $tokens->{error},
+                content => $tokens->{error_description}
+            });
+            return $self->redirect_to_error();
+
+        }
 
         my $claims = $self->extract_claims_from_id_token($tokens->{id_token});
 
