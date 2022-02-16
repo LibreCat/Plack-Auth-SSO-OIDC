@@ -1,4 +1,5 @@
 {{$NEXT}}
+  - basic authentication requires encode_base64 with trailing =
 
 0.011  2022-02-16 10:35:22 CET
   - cleanup called without session
