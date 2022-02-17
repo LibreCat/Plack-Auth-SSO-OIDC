@@ -338,19 +338,12 @@ sub to_app {
 
         }
 
-        my $auth_sso = $self->get_auth_sso($session);
-
-        #already got here before
-        if ( is_hash_ref($auth_sso) ) {
-
-            $log->debug( "auth_sso already present" );
-
-            return $self->redirect_to_authorization();
-
-        }
-
         my $state = $query_params->get("state");
         my $stored_state = $self->get_csrf_token($session);
+
+        # remove auth_sso from possibly previous successfull authentication
+        # (allowing for reauthentication)
+        $session->remove($self->session_key);
 
         # redirect to authorization url
         if ( !(is_string($stored_state) && is_string($state)) ) {
