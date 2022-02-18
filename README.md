@@ -146,19 +146,13 @@ It inherits all configuration options from its parent.
 
     and therefore will have no effect:
 
-    \* `code_challenge`
-
-    \* `code_challenge_method`
-
-    \* `state`
-
-    \* `scope`
-
-    \* `client_id`
-
-    \* `response_type`
-
-    \* `redirect_uri`
+    - `code_challenge`
+    - `code_challenge_method`
+    - `state`
+    - `scope`
+    - `client_id`
+    - `response_type`
+    - `redirect_uri`
 
 - `allowed_authorize_params`
 
@@ -214,6 +208,10 @@ It inherits all configuration options from its parent.
     current url if that is allowed), then the external server
 
     will just sent you back with the same tokens.
+
+    Note that `session("auth_sso")` is removed at the start
+
+    of every (re)authentication.
 
 # LOGGING
 

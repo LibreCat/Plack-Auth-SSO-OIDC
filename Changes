@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.013  2022-02-18 09:51:01 CET
   - allow for reauthentication
   - add option authorize_params for extra authorization parameters from the config
   - add option allowed_authorize_params for extra authorization from the url

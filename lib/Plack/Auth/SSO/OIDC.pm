@@ -16,7 +16,7 @@ use MIME::Base64;
 use Digest::SHA;
 use Try::Tiny;
 
-our $VERSION = "0.012";
+our $VERSION = "0.013";
 
 with "Plack::Auth::SSO";
 
