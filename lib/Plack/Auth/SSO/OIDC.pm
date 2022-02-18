@@ -650,19 +650,23 @@ Note that some parameters are set internally
 
 and therefore will have no effect:
 
-* C<< code_challenge >>
+=over 6
 
-* C<< code_challenge_method >>
+=item C<< code_challenge >>
 
-* C<< state >>
+=item C<< code_challenge_method >>
 
-* C<< scope >>
+=item C<< state >>
 
-* C<< client_id >>
+=item C<< scope >>
 
-* C<< response_type >>
+=item C<< client_id >>
 
-* C<< redirect_uri >>
+=item C<< response_type >>
+
+=item C<< redirect_uri >>
+
+=back
 
 =item C<< allowed_authorize_params >>
 
@@ -745,6 +749,10 @@ set anywhere (neither in C<< authorize_params >> nor in the
 current url if that is allowed), then the external server
 
 will just sent you back with the same tokens.
+
+Note that C<< session("auth_sso") >> is removed at the start
+
+of every (re)authentication.
 
 =back
 
