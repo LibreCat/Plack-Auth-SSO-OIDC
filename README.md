@@ -134,6 +134,48 @@ It inherits all configuration options from its parent.
 
     cf. [https://openid.net/specs/openid-connect-basic-1\_0.html#Scopes](https://openid.net/specs/openid-connect-basic-1_0.html#Scopes)
 
+- `authorize_params`
+
+    Hash reference of parameters (values must be strings) that are added to
+
+    the authorization url. Empty by default
+
+    e.g. `{ prompt => "login", "kc_idp_hint" => "orcid" }`
+
+    Note that some parameters are set internally
+
+    and therefore will have no effect:
+
+    \* `code_challenge`
+
+    \* `code_challenge_method`
+
+    \* `state`
+
+    \* `scope`
+
+    \* `client_id`
+
+    \* `response_type`
+
+    \* `redirect_uri`
+
+- `allowed_authorize_params`
+
+    Array reference of parameter names.
+
+    When constructing the authorization url,
+
+    these parameters are copied from the current url query
+
+    to the authorization url. This allows to add some
+
+    dynamic configuration, but should be used with caution.
+
+    Note that parameters from `authorize_params` always
+
+    take precedence.
+
 - `uid_key`
 
     Attribute from claims to be used as uid
@@ -154,6 +196,24 @@ It inherits all configuration options from its parent.
     - jwt payload. Can be decoded with base64 into a json string
     - jwt signature
 - the jwt payload from the `id_token` is decoded into a json string and then to a perl hash. All this data is stored `$session->{auth_sso}->{info}`. One of these attributes will be the uid that will be stored at `$session->{auth_sso}->{uid}`. This is determined by configuration key `uid_key` (see above). e.g. "email"
+
+# NOTES
+
+- Can I reauthenticate when I visit the application?
+
+    When this Plack application is for example mounted at
+
+    `/auth/oidc`, then you can reauthenticate by visiting
+
+    it again, but it depends on your configuration what actually
+
+    happens at the openid connect server. If `prompt` is not
+
+    set anywhere (neither in `authorize_params` nor in the
+
+    current url if that is allowed), then the external server
+
+    will just sent you back with the same tokens.
 
 # LOGGING
 
