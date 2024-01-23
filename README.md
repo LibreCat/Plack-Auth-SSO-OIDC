@@ -10,7 +10,7 @@ Plack::Auth::SSO::OIDC - implementation of OpenID Connect for Plack::Auth::SSO
 
 # DESCRIPTION
 
-This is an implementation of [Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO) to authenticate against a openid connect server.
+This is an implementation of [Plack::Auth::SSO](https://metacpan.org/pod/Plack%3A%3AAuth%3A%3ASSO) to authenticate against a openid connect server.
 
 It inherits all configuration options from its parent.
 
@@ -90,23 +90,23 @@ It inherits all configuration options from its parent.
 
 - `uri_base`
 
-    See ["uri\_base" in Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO#uri_base)
+    See ["uri\_base" in Plack::Auth::SSO](https://metacpan.org/pod/Plack%3A%3AAuth%3A%3ASSO#uri_base)
 
 - `id`
 
-    See ["id" in Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO#id)
+    See ["id" in Plack::Auth::SSO](https://metacpan.org/pod/Plack%3A%3AAuth%3A%3ASSO#id)
 
 - `session_key`
 
-    See ["session\_key" in Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO#session_key)
+    See ["session\_key" in Plack::Auth::SSO](https://metacpan.org/pod/Plack%3A%3AAuth%3A%3ASSO#session_key)
 
 - `authorization_path`
 
-    See ["authorization\_path" in Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO#authorization_path)
+    See ["authorization\_path" in Plack::Auth::SSO](https://metacpan.org/pod/Plack%3A%3AAuth%3A%3ASSO#authorization_path)
 
 - `error_path`
 
-    See ["error\_path" in Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO#error_path)
+    See ["error\_path" in Plack::Auth::SSO](https://metacpan.org/pod/Plack%3A%3AAuth%3A%3ASSO#error_path)
 
 - `openid_uri`
 
@@ -215,7 +215,7 @@ It inherits all configuration options from its parent.
 
 # LOGGING
 
-All subclasses of [Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO) use [Log::Any](https://metacpan.org/pod/Log::Any)
+All subclasses of [Plack::Auth::SSO](https://metacpan.org/pod/Plack%3A%3AAuth%3A%3ASSO) use [Log::Any](https://metacpan.org/pod/Log%3A%3AAny)
 to log messages to the category that equals the current
 package name.
 
@@ -233,4 +233,4 @@ See [http://dev.perl.org/licenses/](http://dev.perl.org/licenses/) for more info
 
 # SEE ALSO
 
-[Plack::Auth::SSO](https://metacpan.org/pod/Plack::Auth::SSO)
+[Plack::Auth::SSO](https://metacpan.org/pod/Plack%3A%3AAuth%3A%3ASSO)
